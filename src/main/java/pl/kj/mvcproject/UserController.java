@@ -8,18 +8,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @Controller
-public class HomeController {
+public class UserController {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public HomeController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @RequestMapping("/add")
-    public String home(@RequestParam(name = "imie", required = false, defaultValue = "") String name,
-                       @RequestParam(name = "nazwisko") String lastName,
-                       @RequestParam(name = "wiek") Integer age) {
+    public String add(@RequestParam(name = "imie", defaultValue = "") String name,
+                      @RequestParam(name = "nazwisko") String lastName,
+                      @RequestParam(name = "wiek") Integer age) {
         if (name.equals("")) {
             return "redirect:err.html";
         } else {
@@ -31,12 +31,12 @@ public class HomeController {
 
     @ResponseBody
     @RequestMapping("/users")
-    public String users() {
+    public String list() {
         List<User> userList = userRepository.getAll();
-        String result = "";
-        for (User user1 : userList) {
-            result += user1.getFirstName() + " " + user1.getLastName() + " " + user1.getAge() + "<br/>";
+        StringBuilder builder = new StringBuilder();
+        for (User user : userList) {
+            builder.append(user.toString()).append("<br/>");
         }
-        return result;
+        return builder.toString();
     }
 }
